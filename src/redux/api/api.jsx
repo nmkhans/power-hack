@@ -30,7 +30,12 @@ export const api = createApi({
                 headers: {
                     authorization: auth
                 }
-            })
+            }),
+            providesTags: ["billings"]
+        }),
+        getTotalSum: builder.query({
+            query: () => "get-total-bill",
+            invalidatesTags: ["billings"]
         })
     })
 })
@@ -38,5 +43,6 @@ export const api = createApi({
 export const {
     useUserLoginMutation,
     useUserRegisterMutation,
-    useBillingListQuery
+    useBillingListQuery,
+    useGetTotalSumQuery
 } = api;
