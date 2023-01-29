@@ -23,11 +23,20 @@ export const api = createApi({
                 method: "POST",
                 body: data
             })
+        }),
+        billingList: builder.query({
+            query: ({pageno, perpage, search, auth}) => ({
+                url: `/billing-list?pageno=${pageno}&perpage=${perpage}&search=${search}`,
+                headers: {
+                    authorization: auth
+                }
+            })
         })
     })
 })
 
 export const {
     useUserLoginMutation,
-    useUserRegisterMutation
+    useUserRegisterMutation,
+    useBillingListQuery
 } = api;
