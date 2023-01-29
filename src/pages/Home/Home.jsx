@@ -20,13 +20,20 @@ const Home = () => {
     const { data, isLoading, error } = useBillingListQuery(query)
     const billings = data?.data[0]?.data;
 
+    const handleSearch = (event) => {
+       setQuery((prev) => ({
+        ...prev,
+        search: event.target.value
+       }))
+    }
+
     return (
         <main className="container my-5">
             <div className="billing__table__header">
                 <Navbar bg="dark">
                     <Container className="flex align-items-center py-2">
                         <div>
-                            <p className="text-white ms-3 mb-0">Showing {data.data[0].data.length} of {data.data[0].count[0].count} Billings</p>
+                            <p className="text-white ms-3 mb-0">Showing {data?.data[0]?.data?.length} of {data?.data[0]?.count[0]?.count} Billings</p>
                         </div>
                         <div>
                             <Form className="d-flex">
@@ -35,6 +42,7 @@ const Home = () => {
                                     placeholder="Search"
                                     className="me-2"
                                     aria-label="Search"
+                                    onChange={handleSearch}
                                 />
                             </Form>
                         </div>
