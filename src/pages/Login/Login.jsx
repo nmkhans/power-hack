@@ -6,16 +6,25 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { useUserLoginMutation } from '../../redux/api/api';
 import { Link, useNavigate } from "react-router-dom";
+import { useSignIn } from 'react-auth-kit'
 
 const Login = () => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
     const [userLogin, { isLoading }] = useUserLoginMutation();
+    const signIn = useSignIn()
     const navigate = useNavigate()
 
     const onSubmit = async (data) => {
         const result = await userLogin(data)
 
         if (result?.data?.success) {
+            signIn({
+                token: result.data.token,
+                expiresIn: 3600,
+                tokenType: "Bearer",
+                authState: result.data.data,
+            })
+
             toast.success(result?.data?.message, {
                 position: "bottom center"
             })
