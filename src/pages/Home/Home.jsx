@@ -7,24 +7,50 @@ import Table from 'react-bootstrap/Table';
 import { useBillingListQuery } from '../../redux/api/api';
 import { useAuthHeader } from 'react-auth-kit'
 import TableRow from './../../components/TableRow/TableRow';
+import { useSignOut } from 'react-auth-kit'
 
 const Home = () => {
     const authHeader = useAuthHeader();
+    const signOut = useSignOut();
     const [query, setQuery] = useState({
         pageno: 1,
         perpage: 10,
         search: "",
+        active: 1,
         auth: authHeader()
     })
 
     const { data, isLoading, error } = useBillingListQuery(query)
+    if (error?.status === 403) {
+        signOut()
+    }
+
     const billings = data?.data[0]?.data;
 
     const handleSearch = (event) => {
-       setQuery((prev) => ({
-        ...prev,
-        search: event.target.value
-       }))
+        setQuery((prev) => ({
+            ...prev,
+            search: event.target.value
+        }))
+    }
+
+    const handlePagination = (index) => {
+        setQuery((prev) => ({
+            ...prev,
+            pageno: index,
+            active: index
+        }))
+    }
+
+    const calculateBtn = () => {
+        const totalData = data?.data[0]?.count[0]?.count;
+        const perPage = query.perpage;
+        const totalAmount = Math.ceil(totalData / perPage)
+        const totalBtn = [];
+        for (let i = 0; i <= totalAmount; i++) {
+            totalBtn.push(i + 1)
+        }
+        return totalBtn;
     }
 
     return (
@@ -69,8 +95,11 @@ const Home = () => {
                     </tbody>
                 </Table>
             </div>
-            <div className="billing__table__pagination">
-
+            <div className="billing__table__pagination text-center">
+                {calculateBtn().map(index => <Button
+                    onClick={() => handlePagination(index)} className="mx-2"
+                    variant={`${index === query.active ? "primary" : "outline-primary"}`}
+                >{index}</Button>)}
             </div>
         </main>
     );
