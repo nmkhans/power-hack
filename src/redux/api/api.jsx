@@ -33,6 +33,27 @@ export const api = createApi({
             }),
             providesTags: ["billings"]
         }),
+        addBilling: builder.mutation({
+            query: ({data, auth}) => ({
+                url: "/add-billing",
+                headers: {
+                    authorization: auth
+                },
+                method: "POST",
+                body: data
+            }),
+            invalidatesTags: ["billings"]
+        }),
+        deleteBilling: builder.mutation({
+            query: ({id, auth}) => ({
+                url: `/delete-billing/${id}`,
+                headers: {
+                    authorization: auth
+                },
+                method: "DELETE"
+            }),
+            invalidatesTags: ["billings"]
+        }),
         getTotalSum: builder.query({
             query: () => "get-total-bill",
             invalidatesTags: ["billings"]
@@ -44,5 +65,7 @@ export const {
     useUserLoginMutation,
     useUserRegisterMutation,
     useBillingListQuery,
-    useGetTotalSumQuery
+    useAddBillingMutation,
+    useDeleteBillingMutation,
+    useGetTotalSumQuery,
 } = api;

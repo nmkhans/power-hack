@@ -4,10 +4,12 @@ import Navbar from 'react-bootstrap/Navbar';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
-import { useBillingListQuery } from '../../redux/api/api';
+import { useBillingListQuery, useDeleteBillingMutation } from '../../redux/api/api';
 import { useAuthHeader } from 'react-auth-kit'
 import TableRow from './../../components/TableRow/TableRow';
 import { useSignOut } from 'react-auth-kit'
+import { toast } from 'react-hot-toast';
+import AddModal from './../../components/AddModal/AddModal';
 
 const Home = () => {
     const authHeader = useAuthHeader();
@@ -19,9 +21,17 @@ const Home = () => {
         active: 1,
         auth: authHeader()
     })
+    const [modal, setModal] = useState({
+        addModal: false,
+        updateModal: false
+    });
 
-    const { data, isLoading, error } = useBillingListQuery(query)
-    if (error?.status === 403) {
+    const { data, isLoading, error: billError } = useBillingListQuery(query)
+
+    const [deleteBilling] = useDeleteBillingMutation()
+
+
+    if (billError?.status === 403) {
         signOut()
     }
 
@@ -40,6 +50,15 @@ const Home = () => {
             pageno: index,
             active: index
         }))
+    }
+
+    const handleDelete = async (id) => {
+        const { auth } = query;
+        const response = await deleteBilling({ id, auth })
+
+        if (response?.data?.success) {
+            toast.success(response?.data?.message)
+        }
     }
 
     const calculateBtn = () => {
@@ -73,7 +92,10 @@ const Home = () => {
                             </Form>
                         </div>
                         <div className="me-3">
-                            <Button variant="outline-primary">Add New</Button>
+                            <Button onClick={() => setModal(prev => ({
+                                ...prev,
+                                addModal: true
+                            }))}variant="outline-primary">Add New</Button>
                         </div>
                     </Container>
                 </Navbar>
@@ -91,7 +113,13 @@ const Home = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {billings?.map(bill => <TableRow key={bill._id} bill={bill} />)}
+                        {billings?.map(bill => (
+                            <TableRow
+                                key={bill._id}
+                                bill={bill}
+                                handleDelete={handleDelete}
+                            />
+                        ))}
                     </tbody>
                 </Table>
             </div>
@@ -100,6 +128,9 @@ const Home = () => {
                     onClick={() => handlePagination(index)} className="mx-2"
                     variant={`${index === query.active ? "primary" : "outline-primary"}`}
                 >{index}</Button>)}
+            </div>
+            <div className="billing__modal">
+                <AddModal show={modal.addModal} setModal={setModal} />
             </div>
         </main>
     );

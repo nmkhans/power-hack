@@ -17,7 +17,7 @@ const Header = () => {
                 <Container>
                     <Navbar.Brand as={Link} to="/" >Power Hack</Navbar.Brand>
                     <Nav className="ms-auto flex align-items-center">
-                        <div className="text-white">Paid Total: {data.data[0].total}</div>
+                        <div className="text-white">Paid Total: {data?.data[0]?.total}</div>
                         <Button
                             onClick={() => logout()} variant="outline-primary ms-3">Logout</Button>
                     </Nav>
