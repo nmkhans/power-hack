@@ -6,7 +6,7 @@ import {
 export const api = createApi({
     reducerPath: "api",
     baseQuery: fetchBaseQuery({
-        baseUrl: "http://localhost:5000/api/v1"
+        baseUrl: "https://nmk-power-hack.onrender.com/api/v1"
     }),
     tagTypes: ["users", "billings"],
     endpoints: (builder) => ({
