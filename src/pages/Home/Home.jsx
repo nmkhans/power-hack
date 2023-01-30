@@ -4,6 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
+import Spinner from 'react-bootstrap/Spinner';
 import { useBillingListQuery, useDeleteBillingMutation } from '../../redux/api/api';
 import { useAuthHeader } from 'react-auth-kit'
 import TableRow from './../../components/TableRow/TableRow';
@@ -31,7 +32,6 @@ const Home = () => {
     const { data, isLoading, error: billError } = useBillingListQuery(query)
 
     const [deleteBilling] = useDeleteBillingMutation()
-
 
     if (billError?.status === 403) {
         signOut()
@@ -80,6 +80,14 @@ const Home = () => {
             totalBtn.push(i + 1)
         }
         return totalBtn;
+    }
+
+    if(isLoading) {
+        return (
+            <div className="text-center mt-5">
+                <Spinner style={{width: "150px", height: "150px"}} animation="border" variant="primary"/>
+            </div>
+        )
     }
 
     return (
