@@ -33,6 +33,9 @@ export const api = createApi({
             }),
             providesTags: ["billings"]
         }),
+        getSingleBilling: builder.query({
+            query: (id) => `/get-single-billing/${id}`
+        }),
         addBilling: builder.mutation({
             query: ({data, auth}) => ({
                 url: "/add-billing",
@@ -41,6 +44,17 @@ export const api = createApi({
                 },
                 method: "POST",
                 body: data
+            }),
+            invalidatesTags: ["billings"]
+        }),
+        updateBilling: builder.mutation({
+            query: ({newData, id, auth}) => ({
+                url: `/update-billing/${id}`,
+                headers: {
+                    authorization: auth
+                },
+                method: "PUT",
+                body: newData
             }),
             invalidatesTags: ["billings"]
         }),
@@ -66,6 +80,8 @@ export const {
     useUserRegisterMutation,
     useBillingListQuery,
     useAddBillingMutation,
+    useUpdateBillingMutation,
     useDeleteBillingMutation,
     useGetTotalSumQuery,
+    useGetSingleBillingQuery
 } = api;

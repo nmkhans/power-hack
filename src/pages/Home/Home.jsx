@@ -10,6 +10,7 @@ import TableRow from './../../components/TableRow/TableRow';
 import { useSignOut } from 'react-auth-kit'
 import { toast } from 'react-hot-toast';
 import AddModal from './../../components/AddModal/AddModal';
+import EditModal from '../../components/EditModal/EditModal';
 
 const Home = () => {
     const authHeader = useAuthHeader();
@@ -23,7 +24,8 @@ const Home = () => {
     })
     const [modal, setModal] = useState({
         addModal: false,
-        updateModal: false
+        updateModal: false,
+        updateId: ""
     });
 
     const { data, isLoading, error: billError } = useBillingListQuery(query)
@@ -59,6 +61,14 @@ const Home = () => {
         if (response?.data?.success) {
             toast.success(response?.data?.message)
         }
+    }
+
+    const handleUpdate = (id) => {
+        setModal(prev => ({
+            ...prev,
+            updateId: id,
+            updateModal: true
+        }))
     }
 
     const calculateBtn = () => {
@@ -118,6 +128,7 @@ const Home = () => {
                                 key={bill._id}
                                 bill={bill}
                                 handleDelete={handleDelete}
+                                handleUpdate={handleUpdate}
                             />
                         ))}
                     </tbody>
@@ -131,6 +142,7 @@ const Home = () => {
             </div>
             <div className="billing__modal">
                 <AddModal show={modal.addModal} setModal={setModal} />
+                <EditModal show={modal.updateModal} setModal={setModal} id={modal.updateId} />
             </div>
         </main>
     );
